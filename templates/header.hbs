@@ -6,6 +6,7 @@
       {{#if locked}}<h1>{{name}}</h1>{{else}}<input class="charname" name="name" type="text" value="{{name}}" aria-label="Nome do personagem">{{/if}}
       <span class="ev5-clan">{{#if clan}}{{clan.name}}{{else}}Clã não definido{{/if}}</span>
     </div>
+    <div class="ev5-frenzy">{{> "systems/wod5e/display/vtm/actors/parts/frenzy.hbs"}}</div>
     <button type="button" class="ev5-xp-pill" data-action="tab" data-group="primary" data-tab="advancement" title="Abrir evolução com XP"><strong>{{ev5XP}}</strong><span>XP disponível</span></button>
   </div>
   <div class="ev5-resources">

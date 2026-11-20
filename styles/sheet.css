@@ -524,3 +524,6 @@
     flex-basis: 48px;
   }
 }
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-frenzy { flex: 0 0 auto; min-width: 120px; text-align: center; }
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-frenzy .field-header { font-family: var(--ev5-font); color: var(--ev5-muted); font-size: 10px; margin-bottom: 5px; }
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-frenzy button { font-size: 11px; }
