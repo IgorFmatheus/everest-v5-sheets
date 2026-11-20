@@ -68,7 +68,7 @@ O limite de geração e os requisitos narrativos devem ser conferidos pela mesa.
 Vantagens, rituais e fórmulas são calculados como aquisições: informe o nome e os pontos adquiridos
 ou o nível. O botão registra o gasto no histórico de XP; o item e seu conteúdo devem ser adicionados
 ou ajustados na aba correspondente da ficha. Um ritual de nível 3 custa 9 XP, sem somar níveis 1 e 2.
-Não compra automaticamente poderes ou especializações. Pré-requisitos narrativos e a escolha de poderes continuam com a mesa. Edições manuais nas abas originais continuam
+Nova especialidade tem custo fixo de **3 XP**, sem escolha de nível. O gasto é registrado no histórico; adicione a especialidade na habilidade correspondente. Não compra automaticamente poderes. Pré-requisitos narrativos e a escolha de poderes continuam com a mesa. Edições manuais nas abas originais continuam
 disponíveis para criação e correções e **não gastam XP automaticamente**; use a aba Evolução para compras.
 
 Os estilos de texto e botões ficam restritos ao conteúdo da ficha, preservando a fonte de ícones dos controles nativos da janela.

@@ -150,6 +150,7 @@ export function bloodPotencyCost(from, to) {
 }
 
 export function acquisitionCost(kind, level) {
+  if (kind === "specialty") return { cost: 3, calculation: "nova especialidade (custo fixo)" };
   if (
     !["advantage", "formula", "ritual"].includes(kind) ||
     !Number.isInteger(level) ||
@@ -188,7 +189,7 @@ export function supplementalXPUpdate(
       ...(source.experiences ?? []),
       {
         id: entryId,
-        name: `${name}${kind === "blood-potency" ? `: ${from} → ${to}` : ` (${to} ${kind === "advantage" ? "ponto(s)" : "nível"})`} — ${quote.cost} XP`,
+        name: `${name}${kind === "specialty" ? " (nova especialidade)" : kind === "blood-potency" ? `: ${from} → ${to}` : ` (${to} ${kind === "advantage" ? "ponto(s)" : "nível"})`} — ${quote.cost} XP`,
         value: -quote.cost,
         timestamp,
         everest: { kind, from, to, cost: quote.cost },

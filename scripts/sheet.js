@@ -287,7 +287,7 @@ export function createVampireSheet(BaseSheet) {
     _advancementQuote() {
       const kind = this._training.kind;
       const source = this.actor._source.system;
-      const to = Number(this._training.to);
+      const to = kind === "specialty" ? 1 : Number(this._training.to);
       if (kind === "blood-potency") {
         const from = Number(source.blood?.potency ?? 0);
         return {
@@ -299,7 +299,7 @@ export function createVampireSheet(BaseSheet) {
           balance: remainingXP(source),
         };
       }
-      if (["advantage", "formula", "ritual"].includes(kind)) {
+      if (["advantage", "formula", "ritual", "specialty"].includes(kind)) {
         const label = String(this._training.name ?? "").trim();
         if (!label) throw new Error("Informe o nome da aquisição.");
         return { ...acquisitionCost(kind, to), kind, to, label, balance: remainingXP(source) };
@@ -332,7 +332,15 @@ export function createVampireSheet(BaseSheet) {
 
     _updateAdvancement() {
       const kind = this._training.kind ?? "attributes";
-      const purchase = ["advantage", "formula", "ritual"].includes(kind);
+      const purchase = ["advantage", "formula", "ritual", "specialty"].includes(kind);
+      const levelField = this.element.querySelector("[data-ev5-level-field]");
+      if (levelField) levelField.hidden = kind === "specialty";
+      const help = this.element.querySelector("[data-ev5-acquisition-help]");
+      if (help)
+        help.textContent =
+          kind === "specialty"
+            ? "Custo fixo de 3 XP. Este fluxo registra o gasto; adicione a especialidade na habilidade correspondente."
+            : "Este fluxo registra o gasto de XP. Adicione ou ajuste o item e seu conteúdo na aba correspondente da ficha.";
       const category = kind.startsWith("discipline-") ? "disciplines" : kind;
       const traits = this.element.querySelector("[data-ev5-trait-field]");
       if (traits) traits.hidden = purchase || kind === "blood-potency";
@@ -450,7 +458,7 @@ export function createVampireSheet(BaseSheet) {
         const rate = quote.rate ?? this._training.rate;
         const confirmed = await foundry.applications.api.DialogV2.confirm({
           window: { title: "Confirmar evolução" },
-          content: `<p>${quote.kind === "trait" || quote.kind === "blood-potency" ? `Aplicar a evolução de nível ${quote.from} para ${quote.to}` : "Registrar o gasto da aquisição no histórico"} por <strong>${quote.cost} XP</strong>?</p><p>Saldo: ${quote.balance} → ${quote.balance - quote.cost} XP.</p>${quote.kind === "trait" || quote.kind === "blood-potency" ? "" : "<p>O item e seu conteúdo devem ser adicionados na aba correspondente da ficha.</p>"}`,
+          content: `<p>${quote.kind === "trait" || quote.kind === "blood-potency" ? `Aplicar a evolução de nível ${quote.from} para ${quote.to}` : "Registrar o gasto da aquisição no histórico"} por <strong>${quote.cost} XP</strong>?</p><p>Saldo: ${quote.balance} → ${quote.balance - quote.cost} XP.</p>${quote.kind === "trait" || quote.kind === "blood-potency" ? "" : "<p>Registre também a aquisição na área correspondente da ficha.</p>"}`,
           rejectClose: false,
         });
         if (!confirmed) return;
