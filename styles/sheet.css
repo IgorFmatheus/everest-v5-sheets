@@ -1,0 +1,526 @@
+/* All overrides are scoped to the optional Everest vampire sheet. */
+.wod5e.actor.sheet.vampire.everest-v5-sheet {
+  --ev5-bg: #14151a;
+  --ev5-panel: #1e2027;
+  --ev5-text: #f0ece7;
+  --ev5-muted: #b7b2b0;
+  --ev5-line: #38343b;
+  --ev5-wine: #a53851;
+  --ev5-accent: #e7b8a0;
+  --ev5-font: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --system-color-1: #85344a;
+  --system-color-2: #1e2027;
+  --system-color-3: #e7b8a0;
+  --system-color-4: #282830;
+  --system-color-5: #f0ece7;
+  --system-color-7: #38343b;
+  --system-color-8: #b7b2b0;
+  --vampire-color-1: #a53851;
+  --vampire-color-2: #34232d;
+  --vampire-color-3: #e7b8a0;
+  color: var(--ev5-text);
+  font-family: var(--ev5-font);
+  border-radius: 12px;
+  container-type: inline-size;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .window-header {
+  background: #211a22;
+  border-bottom: 1px solid #49333e;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-pool {
+  color: var(--ev5-text);
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet.actor.sheet:not(.minimized):not(.group) {
+  min-width: 640px;
+  min-height: 540px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .window-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+  background: var(--ev5-bg);
+  color: var(--ev5-text);
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .window-content .actor-header,
+.wod5e.actor.sheet.vampire.everest-v5-sheet .window-content .tab {
+  margin-left: 0;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet button,
+.wod5e.actor.sheet.vampire.everest-v5-sheet input,
+.wod5e.actor.sheet.vampire.everest-v5-sheet select {
+  font-family: var(--ev5-font);
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet button {
+  min-height: 34px;
+  width: auto;
+  height: auto;
+  border: 1px solid var(--ev5-line);
+  border-radius: 7px;
+  background: #282830;
+  color: var(--ev5-text);
+  font-size: 12px;
+  box-shadow: none;
+  line-height: 1.3;
+  padding: 7px 10px;
+  cursor: pointer;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet button:hover:not(:disabled) {
+  border-color: var(--ev5-accent);
+  background: #38303a;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet button:focus-visible,
+.wod5e.actor.sheet.vampire.everest-v5-sheet input:focus-visible,
+.wod5e.actor.sheet.vampire.everest-v5-sheet select:focus-visible {
+  outline: 2px solid var(--ev5-accent);
+  outline-offset: 2px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet input,
+.wod5e.actor.sheet.vampire.everest-v5-sheet select {
+  width: 100%;
+  height: 36px;
+  padding: 7px 10px;
+  border: 1px solid var(--ev5-line);
+  border-radius: 6px;
+  background: #13141a;
+  color: var(--ev5-text);
+  font-size: 13px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet select option,
+.wod5e.actor.sheet.vampire.everest-v5-sheet select optgroup {
+  background: #1e2027;
+  color: var(--ev5-text);
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-header {
+  display: block;
+  flex: 0 0 auto;
+  padding: 16px 20px 12px;
+  background: linear-gradient(110deg, #2b1923, #191920 65%);
+  border-bottom: 1px solid var(--ev5-line);
+  text-align: left;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 14px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-portrait {
+  flex: 0 0 62px;
+  width: 62px;
+  height: 68px;
+  object-fit: cover;
+  border: 1px solid #79515e;
+  border-radius: 9px;
+  cursor: pointer;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-identity-text {
+  flex: 1;
+  min-width: 0;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet h1,
+.wod5e.actor.sheet.vampire.everest-v5-sheet h2,
+.wod5e.actor.sheet.vampire.everest-v5-sheet h3 {
+  font-family: var(--ev5-font);
+  color: var(--ev5-text);
+  margin: 0;
+  border: 0;
+  letter-spacing: -0.02em;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet h1 {
+  font-size: 25px;
+  font-weight: 650;
+  line-height: 1.3;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet h2 {
+  font-size: 18px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet h3 {
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-eyebrow {
+  display: block;
+  color: var(--ev5-accent);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1.7;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-clan {
+  color: var(--ev5-muted);
+  font-size: 12px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-xp-pill {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 100px;
+  padding: 9px 14px;
+  background: #35222d;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-xp-pill strong {
+  font-size: 22px;
+  color: var(--ev5-accent);
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-xp-pill span {
+  font-size: 10px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-resources {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-resource {
+  padding: 8px;
+  border: 1px solid #40313b;
+  border-radius: 7px;
+  background: #17161ca6;
+  text-align: center;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-resource .field-header {
+  color: var(--ev5-muted);
+  font-family: var(--ev5-font);
+  font-size: 11px;
+  margin: 0 0 5px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-resource .resource {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  min-height: 22px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-resource .resource-label {
+  font-size: 11px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-resource .field-section {
+  margin: 0;
+  padding: 0;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-hunger {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-hunger .rouse-button {
+  min-height: 26px;
+  padding: 2px 7px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-nav {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 4px;
+  align-items: center;
+  overflow-x: auto;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--ev5-line);
+  background: #191a20;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-tab {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 5px;
+  align-items: center;
+  padding: 7px 9px;
+  font-size: 11px;
+  background: transparent;
+  border-color: transparent;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-tab.active {
+  background: #492b39;
+  border-color: #975066;
+  color: #ffe9df;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-nav .lock-btn {
+  position: static;
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-nav .wod5e-symbol {
+  font-size: 16px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .window-content > section.tab {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  padding: 16px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-session.active,
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-advancement.active {
+  display: block;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet [hidden] {
+  display: none !important;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-searchbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  color: var(--ev5-muted);
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-searchbar input {
+  flex: 1;
+  height: 38px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-session-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(310px, 1fr);
+  align-items: start;
+  gap: 16px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-library {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-panel {
+  padding: 16px;
+  border: 1px solid var(--ev5-line);
+  background: var(--ev5-panel);
+  border-radius: 9px;
+  min-width: 0;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-count {
+  display: grid;
+  place-content: center;
+  min-width: 28px;
+  height: 28px;
+  border: 1px solid var(--ev5-line);
+  border-radius: 50%;
+  color: var(--ev5-muted);
+  font-size: 12px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-hint {
+  color: var(--ev5-muted);
+  font-size: 11px;
+  line-height: 1.65;
+  margin: 7px 0 12px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-cards {
+  display: grid;
+  gap: 7px;
+  margin-top: 10px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-roll-card,
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-power-card {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: #17181e;
+  border: 1px solid #34313b;
+  border-radius: 7px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-card-copy {
+  min-width: 0;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-card-copy h3 {
+  overflow-wrap: anywhere;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-card-copy p {
+  margin: 4px 0;
+  color: var(--ev5-muted);
+  font-size: 11px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-card-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 5px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-roll-button {
+  background: #512a3a;
+  border-color: #754153;
+  white-space: nowrap;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-icon-button {
+  padding: 7px;
+  background: transparent;
+  border-color: transparent;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-empty {
+  padding: 24px 12px;
+  text-align: center;
+  color: var(--ev5-muted);
+  border: 1px dashed #50414b;
+  border-radius: 7px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-empty > i {
+  font-size: 23px;
+  color: var(--ev5-accent);
+  margin-bottom: 10px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-empty p {
+  font-size: 12px;
+  line-height: 1.6;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-selected {
+  margin: 10px 0 5px;
+  font-size: 13px;
+  color: #f3d7d2;
+  min-height: 18px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-pool {
+  display: block;
+  font-size: 13px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-builder-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 86px;
+  gap: 8px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-builder-fields label,
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--ev5-muted);
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-builder-actions {
+  display: flex;
+  gap: 7px;
+  margin: 10px 0 16px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet button.ev5-primary {
+  background: #85344a;
+  border-color: #b5566f;
+  color: #fff5ef;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-trait-catalog {
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 4px;
+  border-top: 1px solid var(--ev5-line);
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-trait-group h3 {
+  font-size: 10px;
+  color: var(--ev5-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 13px 0 8px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-trait-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-trait {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  text-align: left;
+  font-size: 11px;
+  padding: 7px 8px;
+  min-height: 33px;
+  background: #17181e;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-trait span {
+  overflow-wrap: anywhere;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-trait strong {
+  color: var(--ev5-accent);
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-trait[aria-pressed="true"] {
+  border-color: #d7869c;
+  background: #512a3a;
+  box-shadow: inset 3px 0 #dd98ab;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-advancement-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+  gap: 16px;
+  align-items: start;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-field {
+  margin: 16px 0;
+  font-size: 12px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-quote {
+  padding: 16px;
+  margin: 18px 0;
+  background: #34232d;
+  border-left: 3px solid #c8879b;
+  font-size: 13px;
+  line-height: 1.8;
+  border-radius: 4px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-xp-total {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  margin: 8px 0 24px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-xp-total strong {
+  font-size: 44px;
+  color: var(--ev5-accent);
+  line-height: 1.2;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-xp-total span {
+  font-size: 12px;
+  color: var(--ev5-muted);
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-rules dl {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 9px;
+  font-size: 12px;
+  margin: 15px 0;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-rules dd {
+  margin: 0;
+  color: var(--ev5-accent);
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-rules > button {
+  display: block;
+  margin-bottom: 14px;
+}
+.wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-rules a {
+  color: var(--ev5-accent);
+  font-size: 11px;
+}
+@container (max-width: 760px) {
+  .wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-session-grid,
+  .wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-advancement-grid {
+    grid-template-columns: 1fr;
+  }
+  .wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-builder {
+    grid-row: 1;
+  }
+  .wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-resources {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-header {
+    padding: 10px 14px;
+  }
+  .wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-identity {
+    padding-bottom: 8px;
+  }
+  .wod5e.actor.sheet.vampire.everest-v5-sheet .ev5-portrait {
+    width: 48px;
+    height: 52px;
+    flex-basis: 48px;
+  }
+}

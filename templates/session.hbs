@@ -1,0 +1,48 @@
+<section class="tab ev5-session {{tab.cssClass}}" data-tab="{{tab.id}}" data-group="{{tab.group}}">
+  <div class="ev5-searchbar"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" data-ev5-input="search" placeholder="Buscar rolagem, poder, atributo ou habilidade…" aria-label="Buscar na ficha"></div>
+  <p data-ev5-empty-search hidden role="status">Nenhum resultado. Tente outro nome.</p>
+  <div class="ev5-session-grid">
+    <div class="ev5-library">
+      <section class="ev5-panel">
+        <div class="ev5-section-heading"><div><span class="ev5-eyebrow">SEU REPERTÓRIO</span><h2>Rolagens salvas</h2></div><span class="ev5-count">{{ev5.savedRolls.length}}</span></div>
+        <p class="ev5-hint">Combine as características ao lado uma vez. Depois, use a rolagem salva.</p>
+        <div class="ev5-cards">
+          {{#each ev5.savedRolls as |roll|}}
+            <article class="ev5-roll-card" data-ev5-search="{{roll.name}} {{roll.description}}" data-item-id="{{roll.id}}" data-drag="true" data-document-uuid="{{roll.uuid}}" data-type="Item">
+              <div class="ev5-card-copy"><h3>{{roll.name}}</h3><p>{{roll.description}}{{#if roll.modifier}} · modificador {{roll.modifier}}{{/if}}</p><span class="ev5-hint">Pool base: {{roll.pool}} dados</span></div>
+              <div class="ev5-card-actions">{{#if ../ev5.editable}}<button type="button" class="ev5-roll-button" data-action="rollItem" data-item-uuid="{{roll.uuid}}" title="Rolar {{roll.name}}"><i class="fa-solid fa-dice-d10" aria-hidden="true"></i> Rolar</button><button type="button" class="ev5-icon-button" data-action="itemEdit" data-item-id="{{roll.id}}" title="Editar {{roll.name}}" aria-label="Editar {{roll.name}}"><i class="fa-solid fa-pen" aria-hidden="true"></i></button>{{/if}}</div>
+            </article>
+          {{else}}<div class="ev5-empty"><i class="fa-solid fa-bookmark" aria-hidden="true"></i><h3>Suas rolagens, sempre à mão</h3><p>Selecione, por exemplo, Destreza + Furtividade, dê um nome e clique em Salvar rolagem.</p></div>{{/each}}
+        </div>
+      </section>
+      <section class="ev5-panel">
+        <div class="ev5-section-heading"><div><span class="ev5-eyebrow">O SANGUE DESPERTA</span><h2>Poderes de disciplina</h2></div><button type="button" data-action="tab" data-group="primary" data-tab="disciplines">Gerenciar</button></div>
+        <div class="ev5-cards">
+          {{#each ev5.powers as |power|}}
+            <article class="ev5-power-card" data-ev5-search="{{power.name}} {{power.discipline}}">
+              <div class="ev5-card-copy"><h3>{{power.name}}</h3><p>{{power.discipline}} · nível {{power.level}}{{#if power.cost}} · custo {{power.cost}}{{/if}}</p></div>
+              <div class="ev5-card-actions"><button type="button" class="ev5-icon-button" data-action="itemChat" data-item-id="{{power.id}}" title="Mostrar {{power.name}} no chat" aria-label="Mostrar {{power.name}} no chat"><i class="fa-solid fa-comment" aria-hidden="true"></i></button>{{#if ../ev5.editable}}{{#if power.rollable}}<button type="button" class="ev5-roll-button" data-action="rollItem" data-item-uuid="{{power.uuid}}" title="Rolar {{power.name}}"><i class="fa-solid fa-dice-d10" aria-hidden="true"></i> Rolar</button>{{/if}}<button type="button" class="ev5-icon-button" data-action="itemEdit" data-item-id="{{power.id}}" title="Abrir {{power.name}}" aria-label="Abrir {{power.name}}"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></button>{{/if}}</div>
+            </article>
+          {{else}}<p class="ev5-hint">Os poderes adicionados à ficha aparecem aqui, com busca pelo nome e pela disciplina.</p>{{/each}}
+        </div>
+      </section>
+    </div>
+    <aside class="ev5-builder ev5-panel">
+      <div class="ev5-composer">
+        <span class="ev5-eyebrow">UMA NOVA COMBINAÇÃO</span><h2>Montar rolagem</h2>
+        <p data-ev5-selected class="ev5-selected" aria-live="polite">Selecione as características abaixo</p>
+        <strong data-ev5-preview class="ev5-pool" aria-live="polite">0 dados</strong>
+        <p class="ev5-hint">Prévia base. Bônus, penalidades e custos são tratados pelo diálogo do sistema.</p>
+        <div class="ev5-builder-fields"><label>Nome<input type="text" data-ev5-input="rollName" maxlength="100" placeholder="Ex.: Caçar nas ruas"></label><label class="ev5-modifier-label">Modificador<input type="number" data-ev5-input="modifier" value="0" min="-30" max="30" step="1"></label></div>
+        {{#if ev5.editable}}<div class="ev5-builder-actions"><button type="button" class="ev5-primary" data-action="ev5RollPool" disabled><i class="fa-solid fa-dice-d10" aria-hidden="true"></i> Rolar agora</button><button type="button" data-action="ev5SaveRoll" disabled><i class="fa-regular fa-bookmark" aria-hidden="true"></i> Salvar rolagem</button></div>{{/if}}
+      </div>
+      <div class="ev5-trait-catalog" aria-label="Características disponíveis">
+        {{#each ev5.catalog as |group|}}
+          <section class="ev5-trait-group"><h3>{{group.label}}</h3><div class="ev5-trait-grid">
+            {{#each group.traits as |trait|}}<button type="button" class="ev5-trait" data-action="ev5SelectTrait" data-path="{{trait.path}}" data-ev5-search="{{trait.label}} {{group.label}}" aria-pressed="false"><span>{{trait.label}}</span><strong>{{trait.value}}</strong></button>{{/each}}
+          </div></section>
+        {{/each}}
+      </div>
+    </aside>
+  </div>
+</section>

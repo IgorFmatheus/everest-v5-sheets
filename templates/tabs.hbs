@@ -1,0 +1,6 @@
+<nav class="ev5-nav tabs" aria-label="Áreas da ficha" data-group="primary">
+  {{#each tabs as |tab|}}
+    <button type="button" class="ev5-tab {{tab.cssClass}}" data-action="tab" data-group="{{tab.group}}" data-tab="{{tab.id}}" title="{{localize tab.title}}">{{{tab.icon}}}<span>{{localize tab.title}}</span></button>
+  {{/each}}
+  {{> "systems/wod5e/display/shared/actors/parts/lock-button.hbs"}}
+</nav>
