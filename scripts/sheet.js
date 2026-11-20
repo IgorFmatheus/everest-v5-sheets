@@ -8,6 +8,11 @@ import {
   savedRollData,
   dicePreview,
   normalizeSearch,
+  orderedCustomRolls,
+  rollOrderUpdates,
+  bloodPotencyCost,
+  acquisitionCost,
+  supplementalXPUpdate,
 } from "./rules.js";
 
 const GROUP_NAMES = { attributes: "Atributos", skills: "Habilidades", disciplines: "Disciplinas" };
@@ -44,6 +49,8 @@ export function createVampireSheet(BaseSheet) {
         ev5SaveRoll: this.saveRoll,
         ev5RollPool: this.rollPool,
         ev5Advance: this.advance,
+        ev5DeleteRoll: this.deleteRoll,
+        ev5MoveRoll: this.moveRoll,
       },
     };
 
@@ -79,7 +86,7 @@ export function createVampireSheet(BaseSheet) {
       this._rollName = "";
       this._modifier = 0;
       this._query = "";
-      this._training = { path: "", to: "", rate: "" };
+      this._training = { kind: "attributes", path: "", to: "", rate: "", name: "" };
     }
 
     async _prepareContext(options) {
@@ -94,23 +101,23 @@ export function createVampireSheet(BaseSheet) {
       const catalog = catalogFor(this.actor);
       const traits = catalog.flatMap((group) => group.traits);
       const traitMap = new Map(traits.map((trait) => [trait.path, trait]));
-      const savedRolls = this.actor.items
-        .filter((item) => item.type === "customRoll")
-        .map((item) => {
-          const paths = Object.values(item.system.dicepool ?? {}).map((entry) => entry.path);
-          const total =
-            paths.reduce((sum, path) => sum + (traitMap.get(path)?.value ?? 0), 0) +
-            Number(item.system.modifier ?? 0);
-          return {
-            id: item.id,
-            uuid: item.uuid,
-            name: item.name,
-            pool: Math.max(0, total),
-            description: paths.map((path) => traitMap.get(path)?.label ?? path).join(" + "),
-            modifier: item.system.modifier || 0,
-          };
-        })
-        .sort((a, b) => a.name.localeCompare(b.name));
+      const orderedRolls = orderedCustomRolls(this.actor.items);
+      const savedRolls = orderedRolls.map((item, index) => {
+        const paths = Object.values(item.system.dicepool ?? {}).map((entry) => entry.path);
+        const total =
+          paths.reduce((sum, path) => sum + (traitMap.get(path)?.value ?? 0), 0) +
+          Number(item.system.modifier ?? 0);
+        return {
+          id: item.id,
+          uuid: item.uuid,
+          name: item.name,
+          pool: Math.max(0, total),
+          description: paths.map((path) => traitMap.get(path)?.label ?? path).join(" + "),
+          modifier: item.system.modifier || 0,
+          canMoveUp: index > 0,
+          canMoveDown: index < orderedRolls.length - 1,
+        };
+      });
       const powers = this.actor.items
         .filter((item) => item.type === "power")
         .map((item) => ({
@@ -191,6 +198,8 @@ export function createVampireSheet(BaseSheet) {
         trait: this._training.path,
         target: this._training.to,
         rate: this._training.rate,
+        kind: this._training.kind ?? "attributes",
+        acquisitionName: this._training.name ?? "",
       })) {
         const field = this._field(name);
         if (field) field.value = value;
@@ -201,10 +210,24 @@ export function createVampireSheet(BaseSheet) {
       this._query = this._field("search")?.value ?? this._query;
       this._rollName = this._field("rollName")?.value ?? this._rollName;
       this._modifier = Number(this._field("modifier")?.value ?? this._modifier);
+      const kind = this._field("kind")?.value ?? this._training.kind;
+      if (kind !== this._training.kind) {
+        this._training.kind = kind;
+        this._training.path = "";
+        this._training.rate = kind?.startsWith("discipline-") ? kind.slice(11) : "";
+        this._training.to =
+          kind === "blood-potency"
+            ? String(Number(this.actor._source.system.blood?.potency ?? 0) + 1)
+            : "1";
+        this._restoreUIState();
+      }
+      this._training.name = this._field("acquisitionName")?.value ?? this._training.name;
       const path = this._field("trait")?.value ?? this._training.path;
       if (path !== this._training.path) {
         this._training.path = path;
-        this._training.rate = "";
+        this._training.rate = this._training.kind?.startsWith("discipline-")
+          ? this._training.kind.slice(11)
+          : "";
         this._training.to = path ? String(baseRating(this.actor._source.system, path) + 1) : "";
         this._restoreUIState();
       } else {
@@ -262,30 +285,89 @@ export function createVampireSheet(BaseSheet) {
     }
 
     _advancementQuote() {
+      const kind = this._training.kind;
+      const source = this.actor._source.system;
+      const to = Number(this._training.to);
+      if (kind === "blood-potency") {
+        const from = Number(source.blood?.potency ?? 0);
+        return {
+          ...bloodPotencyCost(from, to),
+          kind,
+          from,
+          to,
+          label: "Potência de Sangue",
+          balance: remainingXP(source),
+        };
+      }
+      if (["advantage", "formula", "ritual"].includes(kind)) {
+        const label = String(this._training.name ?? "").trim();
+        if (!label) throw new Error("Informe o nome da aquisição.");
+        return { ...acquisitionCost(kind, to), kind, to, label, balance: remainingXP(source) };
+      }
       const trait = catalogFor(this.actor)
         .flatMap((group) => group.traits)
         .find((entry) => entry.path === this._training.path);
       if (!trait) throw new Error("Escolha a característica que deseja evoluir.");
-      const source = this.actor._source.system;
+      const category = kind?.startsWith("discipline-") ? "disciplines" : kind;
+      if (category && category !== trait.category)
+        throw new Error("Escolha uma característica do tipo selecionado.");
       const from = baseRating(source, trait.path);
       const quote = advancementCost(
         trait.category,
         from,
         Number(this._training.to),
-        this._training.rate,
+        kind?.startsWith("discipline-") ? kind.slice(11) : this._training.rate,
       );
-      return { ...quote, trait, from, to: Number(this._training.to), balance: remainingXP(source) };
+      return {
+        ...quote,
+        kind: "trait",
+        rate: kind?.startsWith("discipline-") ? kind.slice(11) : this._training.rate,
+        label: trait.label,
+        trait,
+        from,
+        to: Number(this._training.to),
+        balance: remainingXP(source),
+      };
     }
 
     _updateAdvancement() {
-      const rate = this.element.querySelector("[data-ev5-rate]");
-      if (rate) rate.hidden = !this._training.path.startsWith("disciplines.");
+      const kind = this._training.kind ?? "attributes";
+      const purchase = ["advantage", "formula", "ritual"].includes(kind);
+      const category = kind.startsWith("discipline-") ? "disciplines" : kind;
+      const traits = this.element.querySelector("[data-ev5-trait-field]");
+      if (traits) traits.hidden = purchase || kind === "blood-potency";
+      for (const group of this.element.querySelectorAll("[data-ev5-category]")) {
+        group.hidden = group.dataset.ev5Category !== category;
+        for (const option of group.querySelectorAll("option")) option.disabled = group.hidden;
+      }
+      for (const node of this.element.querySelectorAll("[data-ev5-acquisition]"))
+        node.hidden = !purchase;
+      const levelLabel = this.element.querySelector("[data-ev5-level-label]");
+      if (levelLabel)
+        levelLabel.textContent =
+          kind === "advantage"
+            ? "Pontos adquiridos"
+            : purchase
+              ? "Nível da aquisição"
+              : "Novo nível";
+      for (const option of this._field("target")?.querySelectorAll("option") ?? []) {
+        if (Number(option.value) > 5) {
+          option.hidden = kind !== "blood-potency";
+          option.disabled = option.hidden;
+        }
+      }
       const result = this.element.querySelector("[data-ev5-quote]");
       const submit = this.element.querySelector('[data-action="ev5Advance"]');
       if (!result || !submit) return;
+      submit.textContent = purchase
+        ? "Registrar aquisição e gastar XP"
+        : "Confirmar evolução e gastar XP";
       try {
         const quote = this._advancementQuote();
-        result.textContent = `${quote.trait.label}: ${quote.from} → ${quote.to} · ${quote.steps.map((step) => `${step.level} × ${quote.multiplier}`).join(" + ")} = ${quote.cost} XP. Saldo após evolução: ${quote.balance - quote.cost} XP.`;
+        const calculation =
+          quote.calculation ??
+          quote.steps.map((step) => `${step.level} × ${quote.multiplier}`).join(" + ");
+        result.textContent = `${quote.label}${quote.from === undefined ? "" : `: ${quote.from} → ${quote.to}`} · ${calculation} = ${quote.cost} XP. Saldo após gasto: ${quote.balance - quote.cost} XP.`;
         submit.disabled = this._spending || quote.balance < quote.cost || !this.actor.isOwner;
       } catch (error) {
         result.textContent = error.message;
@@ -316,6 +398,11 @@ export function createVampireSheet(BaseSheet) {
           modifier: this._modifier,
           knownPaths: pool.traits.map((trait) => trait.path),
         });
+        data.sort =
+          Math.max(
+            0,
+            ...orderedCustomRolls(this.actor.items).map((item) => Number(item.sort) || 0),
+          ) + 1000;
         await this.actor.createEmbeddedDocuments("Item", [data]);
         ui.notifications.info(
           "Rolagem salva na ficha. O pool acompanha a evolução das características.",
@@ -360,28 +447,32 @@ export function createVampireSheet(BaseSheet) {
       this._updateAdvancement();
       try {
         const quote = this._advancementQuote();
-        const rate = this._training.rate;
+        const rate = quote.rate ?? this._training.rate;
         const confirmed = await foundry.applications.api.DialogV2.confirm({
           window: { title: "Confirmar evolução" },
-          content: `<p>Aplicar a evolução de nível ${quote.from} para ${quote.to} por <strong>${quote.cost} XP</strong>?</p><p>Saldo: ${quote.balance} → ${quote.balance - quote.cost} XP.</p>`,
+          content: `<p>${quote.kind === "trait" || quote.kind === "blood-potency" ? `Aplicar a evolução de nível ${quote.from} para ${quote.to}` : "Registrar o gasto da aquisição no histórico"} por <strong>${quote.cost} XP</strong>?</p><p>Saldo: ${quote.balance} → ${quote.balance - quote.cost} XP.</p>${quote.kind === "trait" || quote.kind === "blood-potency" ? "" : "<p>O item e seu conteúdo devem ser adicionados na aba correspondente da ficha.</p>"}`,
           rejectClose: false,
         });
         if (!confirmed) return;
         if (!this.actor.isOwner || !this.isEditable)
           throw new Error("Você não pode editar esta ficha.");
-        const update = advancementUpdate(this.actor._source.system, {
-          path: quote.trait.path,
-          to: quote.to,
-          rate,
-          label: quote.trait.label,
-          expectedFrom: quote.from,
-          expectedXP: quote.balance,
-          entryId: foundry.utils.randomID(16),
-          timestamp: Date.now(),
-        });
+        const update = (quote.kind === "trait" ? advancementUpdate : supplementalXPUpdate)(
+          this.actor._source.system,
+          {
+            path: quote.trait?.path,
+            kind: quote.kind,
+            to: quote.to,
+            rate,
+            label: quote.label,
+            expectedFrom: quote.from,
+            expectedXP: quote.balance,
+            entryId: foundry.utils.randomID(16),
+            timestamp: Date.now(),
+          },
+        );
         await this.actor.update(update);
         ui.notifications.info(
-          `Evolução aplicada. ${quote.cost} XP registrados no histórico da ficha.`,
+          `${quote.kind === "trait" || quote.kind === "blood-potency" ? "Evolução aplicada" : "Aquisição registrada"}. ${quote.cost} XP registrados no histórico da ficha.`,
         );
       } catch (error) {
         ui.notifications.error(error.message);
@@ -394,6 +485,49 @@ export function createVampireSheet(BaseSheet) {
     async _onClose(...args) {
       this._ev5Listeners?.abort();
       return super._onClose(...args);
+    }
+
+    static async moveRoll(_event, target) {
+      if (!this.actor.isOwner || !this.isEditable || this._managingRolls) return;
+      this._managingRolls = true;
+      try {
+        const updates = rollOrderUpdates(
+          this.actor.items,
+          target.dataset.itemId,
+          Number(target.dataset.direction),
+        );
+        if (updates.length) await this.actor.updateEmbeddedDocuments("Item", updates);
+      } catch (error) {
+        ui.notifications.error(error.message);
+      } finally {
+        this._managingRolls = false;
+      }
+    }
+
+    static async deleteRoll(_event, target) {
+      if (!this.actor.isOwner || !this.isEditable || this._managingRolls) return;
+      const id = target.dataset.itemId;
+      if (!this.actor.items.find((item) => item.id === id && item.type === "customRoll")) return;
+      this._managingRolls = true;
+      try {
+        const confirmed = await foundry.applications.api.DialogV2.confirm({
+          window: { title: "Excluir rolagem salva" },
+          content: "<p>Excluir esta rolagem salva da ficha?</p>",
+          rejectClose: false,
+        });
+        if (
+          confirmed &&
+          this.actor.isOwner &&
+          this.isEditable &&
+          this.actor.items.find((item) => item.id === id && item.type === "customRoll")
+        ) {
+          await this.actor.deleteEmbeddedDocuments("Item", [id]);
+        }
+      } catch (error) {
+        ui.notifications.error(error.message);
+      } finally {
+        this._managingRolls = false;
+      }
     }
   };
 }

@@ -116,3 +116,85 @@ export function dicePreview(total, hunger) {
   const hungerDice = Math.min(pool, Math.max(0, hunger));
   return { total: pool, hunger: hungerDice, normal: pool - hungerDice };
 }
+
+export function orderedCustomRolls(items) {
+  return [...items]
+    .filter((item) => item.type === "customRoll")
+    .sort(
+      (a, b) =>
+        (Number(a.sort) || 0) - (Number(b.sort) || 0) ||
+        a.name.localeCompare(b.name) ||
+        a.id.localeCompare(b.id),
+    );
+}
+
+export function rollOrderUpdates(items, itemId, direction) {
+  const ordered = orderedCustomRolls(items);
+  const index = ordered.findIndex((item) => item.id === itemId);
+  if (index < 0 || ![-1, 1].includes(direction)) throw new Error("Rolagem ou direção inválida.");
+  const next = index + direction;
+  if (next < 0 || next >= ordered.length) return [];
+  [ordered[index], ordered[next]] = [ordered[next], ordered[index]];
+  return ordered.map((item, position) => ({ _id: item.id, sort: (position + 1) * 1000 }));
+}
+
+export function bloodPotencyCost(from, to) {
+  if (!Number.isInteger(from) || !Number.isInteger(to) || from < 0 || to <= from || to > 10) {
+    throw new Error("Escolha uma Potência de Sangue maior que a atual, até 10.");
+  }
+  const steps = Array.from({ length: to - from }, (_, index) => ({
+    level: from + index + 1,
+    cost: (from + index + 1) * 10,
+  }));
+  return { multiplier: 10, steps, cost: steps.reduce((sum, step) => sum + step.cost, 0) };
+}
+
+export function acquisitionCost(kind, level) {
+  if (
+    !["advantage", "formula", "ritual"].includes(kind) ||
+    !Number.isInteger(level) ||
+    level < 1 ||
+    level > 5
+  ) {
+    throw new Error("Selecione de 1 a 5 pontos ou um nível de aquisição válido.");
+  }
+  return {
+    cost: level * 3,
+    calculation: kind === "advantage" ? `${level} ponto(s) × 3` : `nível ${level} × 3`,
+  };
+}
+
+export function supplementalXPUpdate(
+  source,
+  { kind, to, label, expectedFrom, expectedXP, entryId, timestamp },
+) {
+  const name = String(label ?? "")
+    .trim()
+    .slice(0, 100);
+  if (!name || !entryId || !Number.isFinite(timestamp))
+    throw new Error("Informe o nome da aquisição.");
+  if (remainingXP(source) !== expectedXP)
+    throw new Error("A ficha mudou. Confira o custo novamente.");
+  let quote;
+  let from;
+  if (kind === "blood-potency") {
+    from = Number(source.blood?.potency ?? 0);
+    if (from !== expectedFrom) throw new Error("A ficha mudou. Confira o custo novamente.");
+    quote = bloodPotencyCost(from, to);
+  } else quote = acquisitionCost(kind, to);
+  if (remainingXP(source) < quote.cost) throw new Error("XP disponível insuficiente.");
+  const update = {
+    "system.experiences": [
+      ...(source.experiences ?? []),
+      {
+        id: entryId,
+        name: `${name}${kind === "blood-potency" ? `: ${from} → ${to}` : ` (${to} ${kind === "advantage" ? "ponto(s)" : "nível"})`} — ${quote.cost} XP`,
+        value: -quote.cost,
+        timestamp,
+        everest: { kind, from, to, cost: quote.cost },
+      },
+    ],
+  };
+  if (kind === "blood-potency") update["system.blood.potency"] = to;
+  return update;
+}

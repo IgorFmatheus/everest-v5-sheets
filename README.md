@@ -26,6 +26,7 @@ Para voltar, escolha a ficha original na mesma configuração.
 - Informe um nome e um modificador, se necessário. **Rolar agora** abre o diálogo do próprio sistema;
   **Salvar rolagem** cria um Item `customRoll` nativo. A combinação acompanha os valores atuais da ficha.
 - As rolagens salvas existentes aparecem na mesma lista e continuam disponíveis na ficha original.
+- Use **↑ / ↓** para mudar a ordem, que fica salva na ficha, e **Excluir** para remover uma rolagem após confirmação. Novas rolagens entram no fim da lista.
 - Os poderes exibem atalhos para rolar, abrir o Item e mostrar no chat. Rolagens, custos de poderes,
   modificadores, falhas bestiais e críticos continuam a cargo do motor do `wod5e`.
 
@@ -34,7 +35,7 @@ demais ajustes são resolvidos pelo diálogo nativo, e podem alterar o pool fina
 
 ## Evolução e XP
 
-Na aba **Evolução**, selecione a característica e o nível desejado. Para disciplinas, escolha a categoria
+Na aba **Evolução**, selecione primeiro o tipo de gasto, depois a característica e o nível desejado. Para disciplinas, escolha a categoria
 de custo adequada: de clã, fora de clã ou Caitiff. Essa escolha é explícita porque o Item de clã do
 sistema não armazena uma lista de disciplinas de clã. O nome do clã não é usado para adivinhar a categoria.
 
@@ -49,18 +50,28 @@ da ficha durante a confirmação bloqueiam a operação. A confirmação fica pr
 O cálculo segue a tabela **Trait Costs: Experience** do livro básico V5, também publicada no
 [Vampire Nexus — Experience Introduction](https://app.demiplane.com/nexus/vampire/rules/experience-introduction):
 
-| Característica         | Custo de cada nível |
-| ---------------------- | ------------------- |
-| Atributo               | Novo nível × 5      |
-| Habilidade             | Novo nível × 3      |
-| Disciplina de clã      | Novo nível × 5      |
-| Disciplina fora de clã | Novo nível × 7      |
-| Disciplina de Caitiff  | Novo nível × 6      |
+| Característica                   | Custo de cada nível   |
+| -------------------------------- | --------------------- |
+| Atributo                         | Novo nível × 5        |
+| Habilidade                       | Novo nível × 3        |
+| Disciplina de clã                | Novo nível × 5        |
+| Disciplina fora de clã           | Novo nível × 7        |
+| Disciplina de Caitiff            | Novo nível × 6        |
+| Potência de Sangue               | Novo nível × 10       |
+| Vantagem                         | 3 por ponto adquirido |
+| Fórmula alquímica de sangue ralo | Nível da fórmula × 3  |
+| Ritual de Feitiçaria de Sangue   | Nível do ritual × 3   |
 
-A primeira versão automatiza aumentos de 1 a 5 pontos dessas características. Não compra poderes,
-rituais, cerimônias, fórmulas de Alquimia, especializações ou Potência de Sangue. Pré-requisitos
-narrativos e a escolha de poderes continuam com a mesa. Edições manuais nas abas originais continuam
+Potência de Sangue atualiza `system.blood.potency` junto com o débito de XP, somando cada nível intermediário.
+O limite de geração e os requisitos narrativos devem ser conferidos pela mesa.
+
+Vantagens, rituais e fórmulas são calculados como aquisições: informe o nome e os pontos adquiridos
+ou o nível. O botão registra o gasto no histórico de XP; o item e seu conteúdo devem ser adicionados
+ou ajustados na aba correspondente da ficha. Um ritual de nível 3 custa 9 XP, sem somar níveis 1 e 2.
+Não compra automaticamente poderes ou especializações. Pré-requisitos narrativos e a escolha de poderes continuam com a mesa. Edições manuais nas abas originais continuam
 disponíveis para criação e correções e **não gastam XP automaticamente**; use a aba Evolução para compras.
+
+Os estilos de texto e botões ficam restritos ao conteúdo da ficha, preservando a fonte de ícones dos controles nativos da janela.
 
 As abas nativas continuam disponíveis, incluindo Disciplinas, Experiência, Equipamento e Notas.
 O modo de acesso limitado permanece o do sistema e não renderiza as novas abas com dados privados.
